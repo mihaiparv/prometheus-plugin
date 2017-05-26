@@ -1,6 +1,5 @@
 package org.jenkinsci.plugins.prometheus.rest;
 
-import org.jenkinsci.plugins.prometheus.JobCollector;
 import org.jenkinsci.plugins.prometheus.MetricsRequest;
 import org.jenkinsci.plugins.prometheus.config.PrometheusConfiguration;
 import org.kohsuke.stapler.StaplerRequest;
@@ -14,7 +13,6 @@ import io.prometheus.client.hotspot.DefaultExports;
 @Extension
 public class PrometheusAction implements UnprotectedRootAction {
     private CollectorRegistry collectorRegistry;
-    private JobCollector jobCollector = new JobCollector();
 
     @Override
     public String getIconFileName() {
@@ -35,7 +33,6 @@ public class PrometheusAction implements UnprotectedRootAction {
         if (request.getRestOfPath().equals(PrometheusConfiguration.get().getAdditionalPath())) {
             if (collectorRegistry == null) {
                 collectorRegistry = CollectorRegistry.defaultRegistry;
-                collectorRegistry.register(jobCollector);
                 DefaultExports.initialize();
             }
             return MetricsRequest.prometheusResponse(collectorRegistry);
